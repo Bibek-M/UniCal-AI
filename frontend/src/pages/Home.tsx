@@ -1,9 +1,10 @@
 import HomeHeader from '../components/Homepage/HomeHeader'
 import AIAssistant from '../components/Homepage/AIAssistant';
 import QuickLinks from '../components/Homepage/QuickLinks';
-import MainCalender from '../components/MainCalender';
+import MainCalender from "../components/MainCalender"
 import NavBar from '../components/NavBar';
 import StayInformed from '../components/StayInformed'
+import { mockEvents } from "../data/mockEvents";
 const Home = () => {
   return (
     <div className="bg-gray-200 h-screen">
@@ -16,7 +17,7 @@ const Home = () => {
        </div>
         <div className="w-4/7 px-3">
         <StayInformed/>
-        <MainCalender/>
+        <MainCalender events={mockEvents}/>
         </div>
         <div>
           <AIAssistant/>
