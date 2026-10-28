@@ -1,170 +1,115 @@
-"use client";
+import { useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
+import type { CalendarEvent } from "../types/calendar";
 
-import { useMemo, useState } from "react";
-
-type EventCategory =
-  | "academic"
-  | "holiday"
-  | "event"
-  | "placement"
-  | "deadline";
-
-interface CalendarEvent {
-  id: number;
-  title: string;
-  date: string; // YYYY-MM-DD
-  category: EventCategory;
-  time?: string;
+interface MainCalendarProps {
+  events: CalendarEvent[];
 }
-
-const events: CalendarEvent[] = [
-  {
-    id: 1,
-    title: "Mid Semester Exams",
-    date: "2026-09-10",
-    category: "academic",
-  },
-  {
-    id: 2,
-    title: "Hackathon 2026",
-    date: "2026-09-12",
-    category: "event",
-    time: "10:00 AM",
-  },
-  {
-    id: 3,
-    title: "Project Submission",
-    date: "2026-09-15",
-    category: "deadline",
-    time: "11:59 PM",
-  },
-  {
-    id: 4,
-    title: "Industry Visit",
-    date: "2026-09-18",
-    category: "event",
-  },
-  {
-    id: 5,
-    title: "Gandhi Jayanti",
-    date: "2026-09-22",
-    category: "holiday",
-  },
-  {
-    id: 6,
-    title: "Placement Drive",
-    date: "2026-09-25",
-    category: "placement",
-    time: "9:00 AM",
-  },
-];
 
 const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-const categoryStyles: Record<EventCategory, string> = {
-  academic: "bg-red-100 text-red-700 border border-red-200",
-  holiday: "bg-green-100 text-green-700 border border-green-200",
-  event: "bg-purple-100 text-purple-700 border border-purple-200",
-  placement: "bg-orange-100 text-orange-700 border border-orange-200",
-  deadline: "bg-blue-100 text-blue-700 border border-blue-200",
-};
-
-const MainCalender = () => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+const MainCalendar = ({ events }: MainCalendarProps) => {
+  const [searchParams, setSearchParams] = useSearchParams();
 
   /*
-   * Returns YYYY-MM-DD.
+   * Current month is controlled through URL.
+   *
+   * /calendar?month=2026-09
+   *
+   * This means refreshing the page keeps the month.
+   */
+  const monthParam = searchParams.get("month");
+
+  const currentDate = useMemo(() => {
+    if (monthParam) {
+      const [year, month] = monthParam.split("-").map(Number);
+
+      if (year && month) {
+        return new Date(year, month - 1, 1);
+      }
+    }
+
+    return new Date();
+  }, [monthParam]);
+
+  /*
+   * Format Date → YYYY-MM-DD
    */
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
+
     const month = String(date.getMonth() + 1).padStart(2, "0");
+
     const day = String(date.getDate()).padStart(2, "0");
 
     return `${year}-${month}-${day}`;
   };
 
   /*
-   * Check whether two dates represent the same day.
+   * Format Date → YYYY-MM
    */
-  const isSameDay = (a: Date, b: Date) => {
+  const formatMonth = (date: Date) => {
+    const year = date.getFullYear();
+
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+
+    return `${year}-${month}`;
+  };
+
+  /*
+   * Check if date is today.
+   */
+  const isToday = (date: Date) => {
+    const today = new Date();
+
     return (
-      a.getFullYear() === b.getFullYear() &&
-      a.getMonth() === b.getMonth() &&
-      a.getDate() === b.getDate()
+      date.getFullYear() === today.getFullYear() &&
+      date.getMonth() === today.getMonth() &&
+      date.getDate() === today.getDate()
     );
   };
 
   /*
-   * Get all days that need to be displayed in the calendar.
-   *
-   * Example:
-   *
-   * September 2026
-   *
-   * If September starts on Tuesday:
-   *
-   * Sun Mon Tue Wed Thu Fri Sat
-   * 30  31   1   2   3   4   5
+   * Generate 42 calendar cells.
    */
   const calendarDays = useMemo(() => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
 
     const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
 
     const startingDay = firstDay.getDay();
-    const daysInMonth = lastDay.getDate();
+
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
 
     const days: Date[] = [];
 
-    // Previous month's days
+    /*
+     * Previous month
+     */
     for (let i = startingDay - 1; i >= 0; i--) {
       days.push(new Date(year, month, -i));
     }
 
-    // Current month's days
+    /*
+     * Current month
+     */
     for (let day = 1; day <= daysInMonth; day++) {
       days.push(new Date(year, month, day));
     }
 
-    // Next month's days
-    const remainingDays = 42 - days.length;
-
-    for (let day = 1; day <= remainingDays; day++) {
-      days.push(new Date(year, month + 1, day));
+    /*
+     * Next month
+     */
+    while (days.length < 42) {
+      days.push(new Date(year, month, days.length - startingDay + 1));
     }
 
     return days;
   }, [currentDate]);
 
   /*
-   * Move to previous month.
-   */
-  const previousMonth = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
-    );
-  };
-
-  /*
-   * Move to next month.
-   */
-  const nextMonth = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
-    );
-  };
-
-  /*
-   * Return to today's month.
-   */
-  const goToToday = () => {
-    setCurrentDate(new Date());
-  };
-
-  /*
-   * Find events belonging to a particular day.
+   * Events for a specific date.
    */
   const getEventsForDay = (date: Date) => {
     const dateString = formatDate(date);
@@ -173,97 +118,212 @@ const MainCalender = () => {
   };
 
   /*
-   * Month title.
+   * Change month.
+   */
+  const changeMonth = (amount: number) => {
+    const newDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() + amount,
+      1
+    );
+
+    const newParams = new URLSearchParams(searchParams);
+
+    newParams.set("month", formatMonth(newDate));
+
+    /*
+     * If a date is currently selected,
+     * remove it when changing month.
+     */
+    newParams.delete("date");
+    newParams.delete("event");
+
+    setSearchParams(newParams);
+  };
+
+  /*
+   * Go to current month.
+   */
+  const goToToday = () => {
+    const today = new Date();
+
+    const newParams = new URLSearchParams(searchParams);
+
+    newParams.set("month", formatMonth(today));
+
+    newParams.delete("date");
+    newParams.delete("event");
+
+    setSearchParams(newParams);
+  };
+
+  /*
+   * Select date.
    *
    * Example:
-   * September 2026
+   *
+   * /calendar?month=2026-09&date=2026-09-10
    */
+  const handleDateClick = (date: Date) => {
+    const newParams = new URLSearchParams(searchParams);
+
+    newParams.set("month", formatMonth(date));
+
+    newParams.set("date", formatDate(date));
+
+    newParams.delete("event");
+
+    setSearchParams(newParams);
+  };
+
   const monthName = currentDate.toLocaleDateString("en-US", {
     month: "long",
     year: "numeric",
   });
 
-  const today = new Date();
+  const selectedDate = searchParams.get("date");
 
   return (
-    <div className="max-w-full rounded-2xl border border-slate-200 bg-white shadow-sm">
-      {/* Calendar Header */}
-      <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">
-        {/* Month Navigation */}
-        <div className="flex items-center gap-4">
+    <div className="w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      {/* Header */}
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 px-6 py-5">
+        <div className="flex items-center gap-3">
           <button
-            onClick={previousMonth}
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-100"
-            aria-label="Previous month"
+            onClick={() => changeMonth(-1)}
+            className="
+              flex
+              h-9
+              w-9
+              items-center
+              justify-center
+              rounded-lg
+              border
+              border-slate-200
+              text-lg
+              text-slate-600
+              transition
+              hover:bg-slate-100
+            "
           >
             ←
           </button>
 
-          <h2 className="min-w-180px text-xl font-semibold text-slate-900">
+          <h2 className="min-w-47.5 text-xl font-semibold text-slate-900">
             {monthName}
           </h2>
 
           <button
-            onClick={nextMonth}
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-100"
-            aria-label="Next month"
+            onClick={() => changeMonth(1)}
+            className="
+              flex
+              h-9
+              w-9
+              items-center
+              justify-center
+              rounded-lg
+              border
+              border-slate-200
+              text-lg
+              text-slate-600
+              transition
+              hover:bg-slate-100
+            "
           >
             →
           </button>
         </div>
 
-        {/* Today Button */}
         <button
           onClick={goToToday}
-          className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+          className="
+            rounded-lg
+            border
+            border-slate-200
+            px-4
+            py-2
+            text-sm
+            font-medium
+            text-slate-700
+            transition
+            hover:bg-slate-100
+          "
         >
           Today
         </button>
       </div>
 
-      {/* Weekday Header */}
+      {/* Weekdays */}
       <div className="grid grid-cols-7 border-b border-slate-200">
         {weekDays.map((day) => (
           <div
             key={day}
-            className="py-3 text-center text-sm font-medium text-slate-500"
+            className="
+              py-3
+              text-center
+              text-xs
+              font-semibold
+              uppercase
+              tracking-wide
+              text-slate-500
+            "
           >
             {day}
           </div>
         ))}
       </div>
 
-      {/* Calendar Grid */}
+      {/* Calendar */}
       <div className="grid grid-cols-7">
         {calendarDays.map((date, index) => {
-          const isCurrentMonth = date.getMonth() === currentDate.getMonth();
+          const dateString = formatDate(date);
 
-          const isToday = isSameDay(date, today);
+          const currentMonth =
+            date.getMonth() === currentDate.getMonth() &&
+            date.getFullYear() === currentDate.getFullYear();
 
           const dayEvents = getEventsForDay(date);
 
+          const selected = selectedDate === dateString;
+
           return (
-            <div
-              key={`${formatDate(date)}-${index}`}
+            <button
+              type="button"
+              key={`${dateString}-${index}`}
+              onClick={() => handleDateClick(date)}
               className={`
+                group
                 min-h-31.25
-                border-b border-r border-slate-200
+                w-full
+                border-b
+                border-r
+                border-slate-200
                 p-2
+                text-left
                 transition
-                hover:bg-slate-50
-                ${!isCurrentMonth ? "bg-slate-50/70" : ""}
+                hover:bg-blue-50/40
+
+                ${!currentMonth ? "bg-slate-50/70" : "bg-white"}
+
+                ${selected ? "bg-blue-50 ring-2 ring-inset ring-blue-500" : ""}
               `}
             >
-              {/* Date Number */}
-              <div className="mb-2 flex items-center justify-between">
+              {/* Date number */}
+              <div className="mb-2 flex items-center">
                 <span
                   className={`
-                    flex h-7 w-7 items-center justify-center
-                    rounded-full text-sm
+                    flex
+                    h-7
+                    w-7
+                    items-center
+                    justify-center
+                    rounded-full
+                    text-sm
+                    font-medium
+
                     ${
-                      isToday
-                        ? "bg-blue-600 font-semibold text-white"
-                        : isCurrentMonth
+                      isToday(date)
+                        ? "bg-blue-600 text-white"
+                        : currentMonth
                         ? "text-slate-800"
                         : "text-slate-400"
                     }
@@ -276,34 +336,40 @@ const MainCalender = () => {
               {/* Events */}
               <div className="space-y-1">
                 {dayEvents.slice(0, 3).map((event) => (
-                  <button
+                  <div
                     key={event.id}
                     className={`
-                      w-full
-                      truncate
-                      rounded-md
-                      px-2
-                      py-1
-                      text-left
-                      text-xs
-                      font-medium
-                      transition
-                      hover:opacity-80
-                      ${categoryStyles[event.category]}
-                    `}
+                        truncate
+                        rounded-md
+                        px-2
+                        py-1
+                        text-xs
+                        font-medium
+
+                        ${
+                          event.category === "academic"
+                            ? "bg-red-100 text-red-700"
+                            : event.category === "holiday"
+                            ? "bg-green-100 text-green-700"
+                            : event.category === "event"
+                            ? "bg-purple-100 text-purple-700"
+                            : event.category === "placement"
+                            ? "bg-orange-100 text-orange-700"
+                            : "bg-blue-100 text-blue-700"
+                        }
+                      `}
                   >
                     {event.title}
-                  </button>
+                  </div>
                 ))}
 
-                {/* More events */}
                 {dayEvents.length > 3 && (
-                  <button className="px-2 text-xs font-medium text-blue-600">
+                  <div className="px-2 text-xs font-medium text-blue-600">
                     +{dayEvents.length - 3} more
-                  </button>
+                  </div>
                 )}
               </div>
-            </div>
+            </button>
           );
         })}
       </div>
@@ -324,17 +390,18 @@ const MainCalender = () => {
   );
 };
 
-/*
- * Small reusable legend component.
- */
-const Legend = ({ color, label }: { color: string; label: string }) => {
+interface LegendProps {
+  color: string;
+  label: string;
+}
+
+const Legend = ({ color, label }: LegendProps) => {
   return (
     <div className="flex items-center gap-2 text-sm text-slate-600">
       <span className={`h-2.5 w-2.5 rounded-full ${color}`} />
-
       {label}
     </div>
   );
 };
 
-export default MainCalender;
+export default MainCalendar;
