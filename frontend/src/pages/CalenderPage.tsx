@@ -1,6 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 
-import MainCalendar from "../components/MainCalendar";
+// import  from "../components/MainCalendar";
+import MainCalendar from "../components/MainCalender"
 import DateDetailsDrawer from "../components/DataDetailsDrawer";
 
 import { mockEvents } from "../data/mockEvents";
