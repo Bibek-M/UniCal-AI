@@ -6,12 +6,12 @@ const AppLogo = () => {
       <div className="flex flex-col">
         <div className="flex gap-2 text-3xl font-bold">
           <div className="flex">
-            <h1>Uni</h1>
-            <h1 className="text-blue-700">Cal</h1>
+            <h1 className="text-white">Uni</h1>
+            <h1 className="text-white">Cal</h1>
           </div>
           <h1 className="text-blue-700">AI</h1>
         </div>
-        <div className="text-xs">Your university .All Events.One place</div>
+        <div className="text-xs text-white">Admin Panel</div>
       </div>
     </div>
   )
