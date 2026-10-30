@@ -1,10 +1,10 @@
 import { useSearchParams } from "react-router-dom";
 
 // import  from "../components/MainCalendar";
-import MainCalendar from "../components/MainCalender"
-import DateDetailsDrawer from "../components/DataDetailsDrawer";
+import MainCalendar from "../../components/StudentComponents/MainCalender"
+import DateDetailsDrawer from "../../components/StudentComponents/DataDetailsDrawer";
 
-import { mockEvents } from "../data/mockEvents";
+import { mockEvents } from "../../data/mockEvents";
 
 const CalendarPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
