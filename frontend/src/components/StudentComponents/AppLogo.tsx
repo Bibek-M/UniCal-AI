@@ -12,7 +12,7 @@ const AppLogo = () => {
           </div>
           <h1 className="text-blue-700">AI</h1>
         </div>
-        <div>Your university .All Events.One place</div>
+        <div className="text-xs">Your university .All Events.One place</div>
       </div>
     </div>
   );

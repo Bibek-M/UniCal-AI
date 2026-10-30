@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import type { CalendarEvent } from "../types/calendar";
+import type { CalendarEvent } from "../../types/calendar";
 
 interface MainCalendarProps {
   events: CalendarEvent[];

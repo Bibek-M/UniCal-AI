@@ -3,8 +3,10 @@ import Institute from '../assets/institute.svg?react'
 
 const NavCarbon = () => {
   return (
-    <div><Institute/></div>
-  )
+    <div>
+      <Institute className="stroke-[3px]" />
+    </div>
+  );
 }
 
 export default NavCarbon

@@ -1,5 +1,5 @@
 import AdminProfile from "./AdminProfile";
-import SearchAdmin from "./SearchUsers";
+import SearchAdmin from "../UsersPage/SearchUsers";
 
 const AdminHeader = () => {
   return (
