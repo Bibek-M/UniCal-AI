@@ -2,18 +2,23 @@ import express from 'express'
 import jwt from 'jsonwebtoken'
 const app=express();
 app.use(express.json());
-// import {authMiddleware} from './middleware.ts';
 import {userModel} from './models.ts';
+import cors from 'cors'
 const port =3000;
-// interface User {
-//   username: string;
-//   password: string;
-// }
-// const users: User[] = [];
+app.use(cors());
+import { connectDB } from './db';
+await connectDB();
 app.post('/signup',async (req,res)=>{
-    const username :string= req.body.username;
-    const password: string= req.body.password;
-    // const userExist = users.find (user=>user.username===username && user.password===password);
+    const { 
+  username, 
+  password, 
+  name, 
+  email, 
+  rollNumber, 
+  department, 
+  semester, 
+  role 
+}: { [key: string]: string } = req.body;
     const userExist =await userModel.findOne({
         username:username,
         password:password
@@ -31,10 +36,16 @@ app.post('/signup',async (req,res)=>{
     // res.json({
     //     message:"New user registered"
     // })
-      const newUser= await userModel.create({
-        username:username,
-        password:password
-    })
+    const newUser = await userModel.create({
+  username,
+  password,
+  name,
+  email,
+  rollNumber,
+  department,
+  semester,
+  role 
+});
     res.json({
        id:newUser._id
     })
@@ -59,6 +70,23 @@ app.post('/signup',async (req,res)=>{
 //         token:token
 //     })
 // })
+
+
+//getting users 
+app.get('/api/users', async (req, res) => {
+  try {
+    const users = await userModel.find({}).select('-password');
+    res.status(200).json(users);
+  } catch (error: any) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to retrieve users from database', 
+      error: error.message 
+    });
+  }
+});
+
 app.listen(port,()=>{
     console.log(`Running on Port: ${port}`);
 })
