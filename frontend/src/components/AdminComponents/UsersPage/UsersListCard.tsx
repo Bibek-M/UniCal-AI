@@ -1,32 +1,43 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface UserElement {
-  id: string;
+  _id: string; 
   name: string;
   email: string;
   rollNumber: string;
   department: string;
   semester: string;
   role: 'Student' | 'Faculty' | 'TPO' | 'Admin';
-  status: 'Active' | 'Inactive';
   joinedOn: string;
 }
 
 const UsersListCard = () => {
-  const [imgs] = useState<UserElement[]>([
-    { id: '1', name: 'Rahul Sharma', email: 'rahul@giet.edu.in', rollNumber: '2023CSE001', department: 'CSE', semester: '7', role: 'Student', status: 'Active', joinedOn: '12 Aug 2025' },
-    { id: '2', name: 'Priya Das', email: 'priya@giet.edu.in', rollNumber: '2023CSE045', department: 'CSE', semester: '7', role: 'Student', status: 'Active', joinedOn: '10 Aug 2025' },
-    { id: '3', name: 'Aman Kumar', email: 'aman@giet.edu.in', rollNumber: '2024ECE012', department: 'ECE', semester: '5', role: 'Student', status: 'Active', joinedOn: '05 Sep 2025' },
-    { id: '4', name: 'Sneha Patra', email: 'sneha@giet.edu.in', rollNumber: '2024CSE033', department: 'CSE', semester: '5', role: 'Student', status: 'Inactive', joinedOn: '28 Jul 2025' },
-    { id: '5', name: 'Faculty - Dr. S. Mohanty', email: 'smohantyygiet.edu.in', rollNumber: '—', department: 'CSE', semester: '—', role: 'Faculty', status: 'Active', joinedOn: '10 Jun 2025' },
-    { id: '6', name: 'T&P Office', email: 'tpo@giet.edu.in', rollNumber: '—', department: 'T&P', semester: '—', role: 'TPO', status: 'Active', joinedOn: '01 Jun 2025' },
-    { id: '7', name: 'Admin User', email: 'admin@giet.edu.in', rollNumber: '—', department: '—', semester: '—', role: 'Admin', status: 'Active', joinedOn: '15 May 2025' },
-    { id: '8', name: 'Rohit Meher', email: 'rohit@giet.edu.in', rollNumber: '2025ME018', department: 'ME', semester: '3', role: 'Student', status: 'Active', joinedOn: '18 Sep 2025' },
-    { id: '9', name: 'Ananya Sahu', email: 'ananya@giet.edu.in', rollNumber: '2023ECE027', department: 'ECE', semester: '7', role: 'Student', status: 'Active', joinedOn: '20 Aug 2025' },
-    { id: '10', name: 'Vikram Singh', email: 'vikram@giet.edu.in', rollNumber: '2024CSE078', department: 'CSE', semester: '5', role: 'Student', status: 'Inactive', joinedOn: '02 Sep 2025' },
-  ]);
-
+  const [users, setUsers] = useState<UserElement[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const [index, setIndex] = useState<number>(1);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('http://localhost:3000/api/users');
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        setUsers(data);
+      } catch (err: any) {
+        setError(err.message || 'Something went wrong while fetching data.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const pagePrev = () => index > 1 && setIndex(index - 1);
   const pageNext = () => setIndex(index + 1);
@@ -41,11 +52,29 @@ const UsersListCard = () => {
     }
   };
 
-  const getStatusBadgeClass = (status: string) => {
-    return status === 'Active'
-      ? 'bg-green-50 text-green-600 border border-green-200'
-      : 'bg-rose-50 text-rose-600 border border-rose-200';
+  // format "DD MMM YYYY"
+  const formatDate = (dateString: string) => {
+    if (!dateString) return '—';
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return dateString; // Fallback to raw string if custom format matches
+      return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      });
+    } catch {
+      return dateString;
+    }
   };
+
+  if (loading) {
+    return <div className="w-full text-center py-10 font-medium text-gray-500">Loading user database...</div>;
+  }
+
+  if (error) {
+    return <div className="w-full text-center py-10 text-rose-500 font-medium">Error: {error}</div>;
+  }
 
   return (
     <div className="w-full flex flex-col justify-between max-w-full">
@@ -60,38 +89,32 @@ const UsersListCard = () => {
               <th className="px-4 py-3 bg-gray-50">Department</th>
               <th className="px-4 py-3 bg-gray-50">Semester</th>
               <th className="px-4 py-3 bg-gray-50">Role</th>
-              <th className="px-4 py-3 bg-gray-50">Status</th>
               <th className="px-4 py-3 bg-gray-50">Joined On</th>
               <th className="px-4 py-3 bg-gray-50 text-center">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 bg-white">
-            {imgs.map((elem) => (
-              <tr key={elem.id} className="hover:bg-gray-50/50 transition-colors">
-                <td className="px-4 py-2.5 whitespace-nowrap text-gray-400">{elem.id}</td>
+            {users.map((elem, i) => (
+              <tr key={elem._id} className="hover:bg-gray-50/50 transition-colors">
+                <td className="px-4 py-2.5 whitespace-nowrap text-gray-400">{i + 1}</td>
                 <td className="px-4 py-2.5 whitespace-nowrap font-medium text-gray-900">
                   <div className="flex items-center gap-3">
-                    <div className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${getRoleBadgeClass(elem.role)}`}>
-                      {elem.name.charAt(0)}
+                    <div className={`w-7 h-7  rounded-full flex items-center justify-center font-bold text-2xl shrink-0 ${getRoleBadgeClass(elem.role)}`}>
+                      {elem.name ? elem.name.charAt(0) : '?'}
                     </div>
                     <span className="truncate max-w-[150px]">{elem.name}</span>
                   </div>
                 </td>
                 <td className="px-4 py-2.5 whitespace-nowrap text-gray-500">{elem.email}</td>
-                <td className="px-4 py-2.5 whitespace-nowrap text-gray-500">{elem.rollNumber}</td>
-                <td className="px-4 py-2.5 whitespace-nowrap text-gray-500">{elem.department}</td>
-                <td className="px-4 py-2.5 whitespace-nowrap text-gray-500">{elem.semester}</td>
+                <td className="px-4 py-2.5 whitespace-nowrap text-gray-500">{elem.rollNumber || '—'}</td>
+                <td className="px-4 py-2.5 whitespace-nowrap text-gray-500">{elem.department || '—'}</td>
+                <td className="px-4 py-2.5 whitespace-nowrap text-gray-500">{elem.semester || '—'}</td>
                 <td className="px-4 py-2.5 whitespace-nowrap">
                   <span className={`px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${getRoleBadgeClass(elem.role)}`}>
                     {elem.role}
                   </span>
                 </td>
-                <td className="px-4 py-2.5 whitespace-nowrap">
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${getStatusBadgeClass(elem.status)}`}>
-                    {elem.status}
-                  </span>
-                </td>
-                <td className="px-4 py-2.5 whitespace-nowrap text-gray-500">{elem.joinedOn}</td>
+                <td className="px-4 py-2.5 whitespace-nowrap text-gray-500">{formatDate(elem.joinedOn)}</td>
                 <td className="px-4 py-2.5 whitespace-nowrap text-center">
                   <div className="flex justify-center gap-2">
                     <button className="text-blue-500 hover:text-blue-700 p-1 rounded hover:bg-blue-50">✏️</button>
