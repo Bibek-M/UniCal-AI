@@ -120,11 +120,19 @@ const InputFormAdmin = () => {
         )}
       </button>
 
-      <div className="w-3/4 text-center mt-4 text-xs text-slate-500">
-        Student or Faculty?{" "}
-        <Link to="/signin" className="text-blue-600 font-bold hover:underline">
-          Go to Student Portal
-        </Link>
+      <div className="w-3/4 text-center mt-4 text-xs text-slate-500 space-y-1.5">
+        <div>
+          New administrator?{" "}
+          <Link to="/signup" className="text-blue-600 font-bold hover:underline">
+            Create an Admin account
+          </Link>
+        </div>
+        <div>
+          Student or Faculty?{" "}
+          <Link to="/signin" className="text-blue-600 font-bold hover:underline">
+            Go to Student Portal
+          </Link>
+        </div>
       </div>
     </form>
   );
