@@ -1,12 +1,24 @@
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Calendar, Megaphone, Trophy, UserRoundGroup } from 'lucide-react';
-import myBackgroundImage from '../assets/college.png'
+import myBackgroundImage from '../assets/college.png';
 import AppLogo from '../../components/StudentComponents/AppLogo';
 import ContactAdmin from '../../components/StudentComponents/studentLogin/ContactAdmin';
 import StudentForm from '../../components/StudentComponents/studentLogin/StudentForm';
+import { isAuthenticated, isAdmin } from '../../utils/auth';
+
 const StudentSignIn = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigate(isAdmin() ? '/admin' : '/home', { replace: true });
+    }
+  }, [navigate]);
+
   return (
     <div className="bg-blue-300 h-screen w-screen flex justify-center items-center">
-      <div className="rounded-2xl  h-8/9 w-12/13 flex shadow-2xl">
+      <div className="rounded-2xl h-8/9 w-12/13 flex shadow-2xl">
         <div
           className="h-full w-1/2 bg-cover bg-center bg-no-repeat rounded-tl-2xl rounded-bl-2xl flex flex-col"
           style={{ backgroundImage: `url(${myBackgroundImage})` }}
@@ -14,17 +26,17 @@ const StudentSignIn = () => {
           <div className="ml-14 mt-14">
             <AppLogo />
           </div>
-          <div className="flex flex-col  mt-10 ml-auto">
-            <h1 className="text-5xl font-extrabold">Stay Informed</h1>
+          <div className="flex flex-col mt-10 ml-auto">
+            <h1 className="text-5xl font-extrabold text-slate-900">Stay Informed</h1>
             <h1 className="text-5xl font-extrabold text-blue-700">
               Stay Ahead.
             </h1>
-            <p className="w-2/3 text-m font-bold">
+            <p className="w-2/3 text-m font-bold text-slate-800">
               All your university events, exams, holidays and important updates
               in one place.
             </p>
           </div>
-          <div className="bg-white h-30 w-9/10 rounded-2xl flex justify-evenly p-2 text-sm pl-5 py-5 self-center mt-auto mb-5">
+          <div className="bg-white h-30 w-9/10 rounded-2xl flex justify-evenly p-2 text-sm pl-5 py-5 self-center mt-auto mb-5 shadow-sm">
             <div className="w-25">
               <Calendar
                 color="#205292"
@@ -64,6 +76,6 @@ const StudentSignIn = () => {
       </div>
     </div>
   );
-}
+};
 
-export default StudentSignIn
+export default StudentSignIn;
