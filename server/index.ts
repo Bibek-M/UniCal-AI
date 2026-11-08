@@ -24,6 +24,9 @@ app.use('/api/rag', ragRouter);
 app.use('/api/chat', ragRouter);
 
 
+// Admin registration authorization key
+const Admin_key = "123456";
+
 // User Signup with bcrypt password hashing
 app.post('/signup', async (req, res) => {
   try {
@@ -35,7 +38,8 @@ app.post('/signup', async (req, res) => {
       rollNumber, 
       department, 
       semester, 
-      role 
+      role,
+      adminKey 
     }: { [key: string]: string } = req.body;
 
     if (!username || !password || !name || !email) {
@@ -43,6 +47,16 @@ app.post('/signup', async (req, res) => {
         message: "Username, password, name, and email are required fields."
       });
       return;
+    }
+
+    // Validate Admin authorization key if attempting to register as Admin
+    if (role === 'Admin') {
+      if (!adminKey || adminKey.trim() !== Admin_key) {
+        res.status(403).json({
+          message: "Invalid Admin Key. A valid authorization key is required to register as an Admin."
+        });
+        return;
+      }
     }
 
     const userExist = await userModel.findOne({
