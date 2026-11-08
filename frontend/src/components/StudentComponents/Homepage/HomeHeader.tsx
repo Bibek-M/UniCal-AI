@@ -4,20 +4,20 @@ import UserProfile from "./UserProfile";
 
 const HomeHeader = () => {
   return (
-    <div className="flex w-full">
-      <h1 className="w-1/7 ">
-        <div className="bg-blue-100 p-3.5">
+    <header className="flex items-center w-full bg-white/50 backdrop-blur-xs border-b border-slate-200/60 shadow-2xs">
+      <div className="w-1/7 shrink-0">
+        <div className="bg-blue-100 p-3.5 flex items-center">
           <AppLogo />
         </div>
-      </h1>
-      <div className="flex pt-7 pb-8 px-1.5 w-4/7 rounded-2xl">
+      </div>
+      <div className="w-4/7 px-4 py-3.5">
         <SearchHome />
       </div>
-      <div className="ml-auto">
-        <UserProfile/>
+      <div className="ml-auto flex items-center pr-3">
+        <UserProfile />
       </div>
-    </div>
+    </header>
   );
-}
+};
 
-export default HomeHeader
+export default HomeHeader;

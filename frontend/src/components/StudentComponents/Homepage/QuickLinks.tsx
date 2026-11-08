@@ -9,7 +9,7 @@ const QuickLinks = () => {
           <div className="bg-blue-200 w-15 h-15 flex justify-center items-center rounded-full mr-3">
             <IoDocumentTextOutline size={35} color="blue" />
           </div>
-          <a href="">
+          <a href="https://drive.google.com/file/d/1ijX86ByysYsZNvhX4aKP3luyalzGQ3ZN/view" target="_blank">
             <div className="font-bold">Academic Calendar</div>
             <div> View official academic calendar</div>
           </a>
@@ -18,7 +18,7 @@ const QuickLinks = () => {
           <div className="bg-amber-200 w-15 h-15 flex justify-center items-center rounded-full mr-3">
             <Megaphone size={35} color="brown" />
           </div>
-          <a href="">
+          <a href="https://www.bput.ac.in/exam-info.php" target="_blank">
             <div className="font-bold">University Notices</div>
             <div> Latest announcements and updates</div>
           </a>

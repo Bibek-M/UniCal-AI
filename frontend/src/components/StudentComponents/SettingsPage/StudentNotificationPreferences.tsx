@@ -4,12 +4,12 @@ import {
   Mail,
   Clock,
   Sparkles,
-  Check,
   Save,
   RotateCcw,
   Sliders,
   CalendarDays,
   Smartphone,
+  Loader2,
 } from "lucide-react";
 
 export interface StudentNotificationSettings {
@@ -139,13 +139,13 @@ const StudentNotificationPreferences: React.FC<StudentNotificationPreferencesPro
             disabled={saving}
             className={`flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-2xs ${
               hasUnsavedChanges
-                ? "bg-blue-600 hover:bg-blue-700 text-white animate-pulse"
+                ? "bg-blue-600 hover:bg-blue-700 text-white ring-2 ring-blue-300 ring-offset-1"
                 : "bg-blue-600 hover:bg-blue-700 text-white"
             }`}
           >
             {saving ? (
               <>
-                <Check size={14} className="animate-spin" />
+                <Loader2 size={14} className="animate-spin" />
                 <span>Saving...</span>
               </>
             ) : (

@@ -33,7 +33,7 @@ const MainCalendar = ({ events }: MainCalendarProps) => {
   }, [monthParam]);
 
   /*
-   * Format Date → YYYY-MM-DD
+   * Format Date → DD-MM-YYYY
    */
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
@@ -42,7 +42,7 @@ const MainCalendar = ({ events }: MainCalendarProps) => {
 
     const day = String(date.getDate()).padStart(2, "0");
 
-    return `${year}-${month}-${day}`;
+    return `${day}-${month}-${year}`;
   };
 
   /*
@@ -112,9 +112,12 @@ const MainCalendar = ({ events }: MainCalendarProps) => {
    * Events for a specific date.
    */
   const getEventsForDay = (date: Date) => {
-    const dateString = formatDate(date);
+    const ddmmyyyy = formatDate(date);
+    const yyyymmdd = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
-    return events.filter((event) => event.date === dateString);
+    return events.filter(
+      (event) => event.date === ddmmyyyy || event.date === yyyymmdd
+    );
   };
 
   /*
@@ -337,7 +340,7 @@ const MainCalendar = ({ events }: MainCalendarProps) => {
               <div className="space-y-1">
                 {dayEvents.slice(0, 3).map((event) => (
                   <div
-                    key={event.id}
+                    key={event.id ?? event._id}
                     className={`
                         truncate
                         rounded-md

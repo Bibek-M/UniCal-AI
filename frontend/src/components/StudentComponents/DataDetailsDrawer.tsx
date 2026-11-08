@@ -5,7 +5,7 @@ import EventDetails from "./EventDetails";
 interface DateDetailsDrawerProps {
   date: string;
   events: CalendarEvent[];
-  selectedEventId?: number;
+  selectedEventId?: number | string;
   onClose: () => void;
 }
 
@@ -16,18 +16,31 @@ const DateDetailsDrawer = ({
   onClose,
 }: DateDetailsDrawerProps) => {
   const formattedDate = useMemo(() => {
-    const parsedDate = new Date(`${date}T00:00:00`);
+    let parsedDate: Date;
+    if (date.includes("-")) {
+      const parts = date.split("-");
+      if (parts[0].length === 4) {
+        parsedDate = new Date(`${date}T00:00:00`);
+      } else {
+        const [day, month, year] = parts;
+        parsedDate = new Date(`${year}-${month}-${day}T00:00:00`);
+      }
+    } else {
+      parsedDate = new Date(date);
+    }
 
-    return parsedDate.toLocaleDateString("en-US", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    });
+    return isNaN(parsedDate.getTime())
+      ? date
+      : parsedDate.toLocaleDateString("en-US", {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        });
   }, [date]);
 
   const visibleEvents = selectedEventId
-    ? events.filter((event) => event.id === selectedEventId)
+    ? events.filter((event) => event.id == selectedEventId || event._id == selectedEventId)
     : events;
 
   return (
@@ -122,7 +135,7 @@ const DateDetailsDrawer = ({
           ) : (
             <div className="space-y-4">
               {visibleEvents.map((event) => (
-                <EventDetails key={event.id} event={event} />
+                <EventDetails key={event.id ?? event._id} event={event} />
               ))}
             </div>
           )}

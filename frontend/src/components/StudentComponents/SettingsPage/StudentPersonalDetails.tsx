@@ -18,23 +18,23 @@ interface StudentPersonalDetailsProps {
 
 const StudentPersonalDetails: React.FC<StudentPersonalDetailsProps> = ({ onProfileSynced }) => {
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(() => getUser());
-  const [loading, setLoading] = useState<boolean>(false);
 
-  // Sync fresh profile from server on load
+  // Sync fresh profile from server once on mount
   useEffect(() => {
+    let isMounted = true;
+
     const fetchFreshProfile = async () => {
       const token = getToken();
       if (!token) return;
 
       try {
-        setLoading(true);
         const res = await fetch("http://localhost:3000/api/users/me", {
           headers: {
             ...getAuthHeaders(),
           },
         });
 
-        if (res.ok) {
+        if (res.ok && isMounted) {
           const freshData = await res.json();
           const mappedUser: AuthUser = {
             id: freshData._id || freshData.id,
@@ -55,13 +55,15 @@ const StudentPersonalDetails: React.FC<StudentPersonalDetailsProps> = ({ onProfi
         }
       } catch (err) {
         console.warn("Could not sync fresh profile from server:", err);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchFreshProfile();
-  }, [onProfileSynced]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, []); // Run only once on mount
 
   const name = currentUser?.name || "Student";
   const initial = name.charAt(0).toUpperCase();
@@ -133,7 +135,7 @@ const StudentPersonalDetails: React.FC<StudentPersonalDetailsProps> = ({ onProfi
               <Lock size={10} /> Locked
             </span>
           </div>
-          <div className="text-sm font-bold text-slate-800 truncate">{loading ? "Loading..." : name}</div>
+          <div className="text-sm font-bold text-slate-800 truncate">{name || "—"}</div>
           <div className="text-[10px] text-slate-400 mt-1">As per admission enrollment records</div>
         </div>
 
@@ -147,7 +149,7 @@ const StudentPersonalDetails: React.FC<StudentPersonalDetailsProps> = ({ onProfi
               <Lock size={10} /> Locked
             </span>
           </div>
-          <div className="text-sm font-bold text-slate-800 font-mono">{loading ? "Loading..." : rollNumber}</div>
+          <div className="text-sm font-bold text-slate-800 font-mono">{rollNumber || "—"}</div>
           <div className="text-[10px] text-slate-400 mt-1">Permanent student enrollment identifier</div>
         </div>
 
@@ -161,7 +163,7 @@ const StudentPersonalDetails: React.FC<StudentPersonalDetailsProps> = ({ onProfi
               <Lock size={10} /> Locked
             </span>
           </div>
-          <div className="text-sm font-bold text-slate-800 truncate">{loading ? "Loading..." : email}</div>
+          <div className="text-sm font-bold text-slate-800 truncate">{email || "—"}</div>
           <div className="text-[10px] text-slate-400 mt-1">Used for official circular broadcasts</div>
         </div>
 
@@ -175,7 +177,7 @@ const StudentPersonalDetails: React.FC<StudentPersonalDetailsProps> = ({ onProfi
               <Lock size={10} /> Locked
             </span>
           </div>
-          <div className="text-sm font-bold text-slate-800 truncate">{loading ? "Loading..." : department}</div>
+          <div className="text-sm font-bold text-slate-800 truncate">{department || "—"}</div>
           <div className="text-[10px] text-slate-400 mt-1">Academic degree discipline</div>
         </div>
 
@@ -189,7 +191,7 @@ const StudentPersonalDetails: React.FC<StudentPersonalDetailsProps> = ({ onProfi
               <Lock size={10} /> Locked
             </span>
           </div>
-          <div className="text-sm font-bold text-slate-800">{loading ? "Loading..." : formattedSemester}</div>
+          <div className="text-sm font-bold text-slate-800">{formattedSemester || "—"}</div>
           <div className="text-[10px] text-slate-400 mt-1">Updated at end-semester progression</div>
         </div>
 
@@ -203,7 +205,7 @@ const StudentPersonalDetails: React.FC<StudentPersonalDetailsProps> = ({ onProfi
               <Lock size={10} /> Locked
             </span>
           </div>
-          <div className="text-sm font-bold text-slate-800 font-mono">{loading ? "Loading..." : username}</div>
+          <div className="text-sm font-bold text-slate-800 font-mono">{username || "—"}</div>
           <div className="text-[10px] text-slate-400 mt-1">Single sign-on portal handle</div>
         </div>
       </div>
