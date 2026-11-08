@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import HomeHeader from "../../components/StudentComponents/Homepage/HomeHeader";
 import NavBar from "../../components/StudentComponents/NavBar";
 import SettingsHero from "../../components/StudentComponents/SettingsPage/SettingsHero";
@@ -21,9 +21,21 @@ const StudentSettings = () => {
     setTimeout(() => setToastMessage(null), 3500);
   };
 
-  const handleProfileSynced = (user: AuthUser) => {
-    setCurrentUser(user);
-  };
+  const handleProfileSynced = useCallback((user: AuthUser) => {
+    setCurrentUser((prev) => {
+      if (
+        prev?.name === user.name &&
+        prev?.email === user.email &&
+        prev?.department === user.department &&
+        prev?.semester === user.semester &&
+        prev?.rollNumber === user.rollNumber &&
+        prev?.username === user.username
+      ) {
+        return prev;
+      }
+      return user;
+    });
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50/60 flex flex-col">
