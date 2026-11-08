@@ -12,7 +12,7 @@ const Users = () => {
       <NavBar/>
     </div>
     <div className="w-9/11 bg-blue-200 h-screen">
-    <div className="pl-5 rounded-2xl max-w-screen">
+    <div className="pl-5 rounded-2xl max-w-screen mr-2 flex flex-col gap-1.5">
         <h1 ><AdminHeader/></h1>
         <div> <UsersHero/> </div>
         <div><UsersListCard/></div>
