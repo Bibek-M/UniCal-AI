@@ -3,6 +3,7 @@ import Home from "./pages/Students/Home";
 import PageNotFound from "./pages/PageNotFound";
 import StudentSignIn from "./pages/Students/StudentSignIn";
 import AdminSignin from "./pages/Admin/AdminSignin";
+import SignUp from "./pages/SignUp";
 import AIAssistantPage from "./pages/Students/AIAssistantPage";
 import CalendarPage from "./pages/Students/CalenderPage";
 import AdminPage from "./pages/Admin/AdminPage";
@@ -19,7 +20,7 @@ import { isAuthenticated, isAdmin } from "./utils/auth";
 
 const App = () => {
   return (
-    <div className="w-screen">
+    <div className="w-full min-h-screen overflow-x-hidden">
       <Routes>
         {/* Default route redirect */}
         <Route
@@ -36,6 +37,8 @@ const App = () => {
         {/* Public Authentication Pages */}
         <Route path="/signin" element={<StudentSignIn />} />
         <Route path="/signinAdmin" element={<AdminSignin />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/SignUp" element={<SignUp />} />
 
         {/* Protected Student Routes */}
         <Route
