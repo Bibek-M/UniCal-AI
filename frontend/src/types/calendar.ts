@@ -6,7 +6,8 @@ export type EventCategory =
   | "deadline";
 
 export interface CalendarEvent {
-  id: number;
+  _id?: string;
+  id?: number | string;
 
   title: string;
   description: string;
@@ -27,4 +28,14 @@ export interface CalendarEvent {
   organizer?: string;
 
   isImportant?: boolean;
+}
+
+export interface StudentScheduleItem {
+  _id: string;
+  userId: string;
+  eventId?: string;
+  eventCustomId?: number;
+  event: CalendarEvent;
+  notes?: string;
+  addedAt: string;
 }
