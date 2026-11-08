@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getAuthHeaders } from '../../../utils/auth';
 
 interface UserElement {
   _id: string; 
@@ -21,7 +22,9 @@ const UsersListCard = () => {
     const fetchUsers = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:3000/api/users');
+        const response = await fetch('http://localhost:3000/api/users', {
+          headers: getAuthHeaders(),
+        });
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

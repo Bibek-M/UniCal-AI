@@ -2,7 +2,7 @@ import { CirclePlus } from "lucide-react";
 
 const UsersHero = () => {
   return (
-    <div className="flex justify-between pr-10 items-center">
+    <div className="flex justify-between pr-10 items-center bg-blue-300 px-3 py-4 rounded-2xl  shadow-2xs shadow-white">
       <div>
       <h2 className="text-blue-600 text-2xl font-semibold">Users</h2>
       <h1 className="text-3xl font-bold">Manage Users</h1>
