@@ -1,3 +1,4 @@
+import { apiUrl } from "../../api";
 import { useState, useEffect } from "react";
 import AppLogo from "../../components/AdminComponents/AdminPage/AppLogo";
 import NavBar from "../../components/AdminComponents/AdminPage/NavBar";
@@ -30,9 +31,9 @@ const AdminPage = () => {
         const headers = getAuthHeaders();
 
         const [eventsRes, usersRes, faqsRes] = await Promise.allSettled([
-          fetch("http://localhost:3000/api/events"),
-          fetch("http://localhost:3000/api/users", { headers }),
-          fetch("http://localhost:3000/api/faqs"),
+          fetch(apiUrl("/api/events")),
+          fetch(apiUrl("/api/users"), { headers }),
+          fetch(apiUrl("/api/faqs")),
         ]);
 
         if (eventsRes.status === "fulfilled" && eventsRes.value.ok) {

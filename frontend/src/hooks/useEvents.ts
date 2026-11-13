@@ -1,3 +1,4 @@
+import { apiUrl } from "../api";
 import { useState, useEffect } from "react";
 import type { CalendarEvent } from "../types/calendar";
 
@@ -9,7 +10,7 @@ export const useEvents = () => {
   const fetchEvents = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:3000/api/events");
+      const response = await fetch(apiUrl("/api/events"));
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

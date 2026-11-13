@@ -1,3 +1,4 @@
+import { apiUrl } from "../../../api";
 import React, { useState } from "react";
 import { PlusCircle, RotateCcw, CheckCircle2, AlertCircle } from "lucide-react";
 import { getAuthHeaders } from "../../../utils/auth";
@@ -26,7 +27,7 @@ const AddFaq: React.FC<AddFaqProps> = ({ onFaqAdded }) => {
 
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:3000/api/faqs", {
+      const res = await fetch(apiUrl("/api/faqs"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

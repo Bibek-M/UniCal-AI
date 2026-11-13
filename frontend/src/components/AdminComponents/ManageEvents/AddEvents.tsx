@@ -1,3 +1,4 @@
+import { apiUrl } from "../../../api";
 import React, { useState } from "react";
 import {
   CalendarPlus,
@@ -177,7 +178,7 @@ const AddEvents = () => {
 
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:3000/api/events", {
+      const res = await fetch(apiUrl("/api/events"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

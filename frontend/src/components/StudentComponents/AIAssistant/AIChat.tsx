@@ -1,3 +1,4 @@
+import { apiUrl } from "../../../api";
 import React, { useState, useRef, useEffect } from "react";
 import {
   Send,
@@ -145,7 +146,7 @@ const AIChat: React.FC<AIChatProps> = ({ onMessageCountChange, clearTrigger }) =
           content: m.content,
         }));
 
-      const res = await fetch("http://localhost:3000/api/rag/chat", {
+      const res = await fetch(apiUrl("/api/rag/chat"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

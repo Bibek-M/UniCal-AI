@@ -1,3 +1,4 @@
+import { apiUrl } from "../../../api";
 import { Eye, EyeOff, Lock, MoveRight, UserRound, AlertCircle, Loader2, ShieldCheck } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
@@ -24,7 +25,7 @@ const InputFormAdmin = () => {
 
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:3000/signin", {
+      const res = await fetch(apiUrl("/signin"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

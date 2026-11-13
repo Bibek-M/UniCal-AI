@@ -1,3 +1,4 @@
+import { apiUrl } from "../../../api";
 import React, { useState } from "react";
 import {
   User,
@@ -66,7 +67,7 @@ const AdminPersonalDetails: React.FC<AdminPersonalDetailsProps> = ({ onProfileUp
         throw new Error("User session expired. Please sign in again.");
       }
 
-      const res = await fetch(`http://localhost:3000/api/users/${userId}`, {
+      const res = await fetch(apiUrl(`/api/users/${userId}`), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

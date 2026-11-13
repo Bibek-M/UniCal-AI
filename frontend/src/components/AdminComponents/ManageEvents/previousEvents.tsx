@@ -1,3 +1,4 @@
+import { apiUrl } from "../../../api";
 import React, { useState, useEffect } from "react";
 import {
   Pencil,
@@ -38,7 +39,7 @@ const PreviousEvents = () => {
   const fetchEvents = async () => {
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:3000/api/events");
+      const res = await fetch(apiUrl("/api/events"));
       if (!res.ok) throw new Error("Failed to fetch events");
       const data = await res.json();
       setEvents(Array.isArray(data) ? data : []);
@@ -85,7 +86,7 @@ const PreviousEvents = () => {
 
     try {
       setActionLoading(true);
-      const res = await fetch(`http://localhost:3000/api/events/${id}`, {
+      const res = await fetch(apiUrl(`/api/events/${id}`), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -114,7 +115,7 @@ const PreviousEvents = () => {
 
     try {
       setActionLoading(true);
-      const res = await fetch(`http://localhost:3000/api/events/${id}`, {
+      const res = await fetch(apiUrl(`/api/events/${id}`), {
         method: "DELETE",
         headers: getAuthHeaders(),
       });

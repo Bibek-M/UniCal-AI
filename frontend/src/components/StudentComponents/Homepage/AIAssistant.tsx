@@ -1,3 +1,4 @@
+import { apiUrl } from "../../../api";
 import { useState, useEffect } from "react";
 import { Bot, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +22,7 @@ const AIAssistant = () => {
     const token = getToken();
     if (!token) return;
 
-    fetch("http://localhost:3000/api/users/me", {
+    fetch(apiUrl("/api/users/me"), {
       headers: { ...getAuthHeaders() },
     })
       .then((res) => (res.ok ? res.json() : null))

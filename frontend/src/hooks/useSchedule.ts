@@ -1,3 +1,4 @@
+import { apiUrl } from "../api";
 import { useState, useEffect, useCallback } from "react";
 import type { CalendarEvent, StudentScheduleItem } from "../types/calendar";
 import { getAuthHeaders, isAuthenticated } from "../utils/auth";
@@ -16,7 +17,7 @@ export const useSchedule = () => {
 
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:3000/api/schedule", {
+      const res = await fetch(apiUrl("/api/schedule"), {
         headers: {
           ...getAuthHeaders(),
         },
@@ -75,7 +76,7 @@ export const useSchedule = () => {
   const addToSchedule = async (event: CalendarEvent): Promise<{ success: boolean; message: string }> => {
     try {
       const eventId = event._id || event.id;
-      const res = await fetch("http://localhost:3000/api/schedule", {
+      const res = await fetch(apiUrl("/api/schedule"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -109,7 +110,7 @@ export const useSchedule = () => {
     eventIdOrScheduleId: string | number
   ): Promise<{ success: boolean; message: string }> => {
     try {
-      const res = await fetch(`http://localhost:3000/api/schedule/${eventIdOrScheduleId}`, {
+      const res = await fetch(apiUrl(`/api/schedule/${eventIdOrScheduleId}`), {
         method: "DELETE",
         headers: {
           ...getAuthHeaders(),
@@ -151,4 +152,3 @@ export const useSchedule = () => {
     refetch: fetchSchedule,
   };
 };
-

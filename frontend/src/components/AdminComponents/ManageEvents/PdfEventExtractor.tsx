@@ -1,3 +1,4 @@
+import { apiUrl } from "../../../api";
 import React, { useState, useRef } from "react";
 import {
   Sparkles,
@@ -119,7 +120,7 @@ export const PdfEventExtractor: React.FC<PdfEventExtractorProps> = ({
         ? dataUrl.split(";base64,")[1]
         : dataUrl;
 
-      const response = await fetch("http://localhost:3000/api/ai/extract-pdf", {
+      const response = await fetch(apiUrl("/api/ai/extract-pdf"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -178,7 +179,7 @@ export const PdfEventExtractor: React.FC<PdfEventExtractorProps> = ({
     setExtractedFileName(null);
 
     try {
-      const response = await fetch("http://localhost:3000/api/ai/extract-text", {
+      const response = await fetch(apiUrl("/api/ai/extract-text"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

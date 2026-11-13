@@ -1,3 +1,4 @@
+import { apiUrl } from "../../../api";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getUser, getAuthHeaders, setAuth, getToken, type AuthUser } from "../../../utils/auth";
@@ -12,7 +13,7 @@ const UserProfile = () => {
       if (!token) return;
 
       try {
-        const res = await fetch("http://localhost:3000/api/users/me", {
+        const res = await fetch(apiUrl("/api/users/me"), {
           headers: {
             ...getAuthHeaders(),
           },

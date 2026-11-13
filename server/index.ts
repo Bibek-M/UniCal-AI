@@ -10,7 +10,7 @@ import { userModel, faqModel, eventModel, scheduleModel } from './models.ts';
 import cors from 'cors';
 import { aiRouter } from './ai/index.ts';
 import { ragRouter } from './rag/index.ts';
-const port = 3000;
+const port = Number(process.env.PORT ?? 3000);
 app.use(cors());
 import { connectDB } from './db';
 await connectDB();
@@ -694,6 +694,6 @@ app.delete('/api/schedule/:id', authMiddleware, async (req: any, res) => {
 });
 
 //serving port
-app.listen(port,()=>{
+app.listen(port,'0.0.0.0',()=>{
     console.log(`Running on Port: ${port}`);
 })

@@ -1,3 +1,4 @@
+import { apiUrl } from "../../../api";
 import { useState, useEffect } from 'react';
 
 interface FAQElement {
@@ -18,7 +19,7 @@ const FAQListCard = () => {
     const fetchFAQs = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:3000/api/faqs');
+        const response = await fetch(apiUrl("/api/faqs"));
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

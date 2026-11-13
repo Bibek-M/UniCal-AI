@@ -1,3 +1,4 @@
+import { apiUrl } from "../../../api";
 import React, { useEffect, useState } from "react";
 import {
   User,
@@ -28,7 +29,7 @@ const StudentPersonalDetails: React.FC<StudentPersonalDetailsProps> = ({ onProfi
       if (!token) return;
 
       try {
-        const res = await fetch("http://localhost:3000/api/users/me", {
+        const res = await fetch(apiUrl("/api/users/me"), {
           headers: {
             ...getAuthHeaders(),
           },
@@ -214,4 +215,3 @@ const StudentPersonalDetails: React.FC<StudentPersonalDetailsProps> = ({ onProfi
 };
 
 export default StudentPersonalDetails;
-

@@ -1,3 +1,4 @@
+import { apiUrl } from "../../../api";
 import React, { useState, useEffect } from "react";
 import {
   Pencil,
@@ -36,7 +37,7 @@ const PreviousFaq: React.FC<PreviousFaqProps> = ({ refreshTrigger }) => {
   const fetchFaqs = async () => {
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:3000/api/faqs");
+      const res = await fetch(apiUrl("/api/faqs"));
       if (!res.ok) throw new Error("Failed to fetch FAQs");
       const data = await res.json();
       setFaqs(Array.isArray(data) ? data : []);
@@ -77,7 +78,7 @@ const PreviousFaq: React.FC<PreviousFaqProps> = ({ refreshTrigger }) => {
 
     try {
       setActionLoading(true);
-      const res = await fetch(`http://localhost:3000/api/faqs/${activeFaq._id}`, {
+      const res = await fetch(apiUrl(`/api/faqs/${activeFaq._id}`), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -108,7 +109,7 @@ const PreviousFaq: React.FC<PreviousFaqProps> = ({ refreshTrigger }) => {
 
     try {
       setActionLoading(true);
-      const res = await fetch(`http://localhost:3000/api/faqs/${activeFaq._id}`, {
+      const res = await fetch(apiUrl(`/api/faqs/${activeFaq._id}`), {
         method: "DELETE",
         headers: getAuthHeaders(),
       });

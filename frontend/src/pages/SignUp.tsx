@@ -1,3 +1,4 @@
+import { apiUrl } from "../api";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
@@ -90,7 +91,7 @@ const SignUp: React.FC = () => {
     try {
       setLoading(true);
 
-      const res = await fetch("http://localhost:3000/signup", {
+      const res = await fetch(apiUrl("/signup"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
